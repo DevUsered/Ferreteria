@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.UI", "Ferreteria.UI\Ferreteria.UI.csproj", "{EB513CC2-9D2B-4358-B378-914CFAD5C234}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.Core", "Ferreteria.Core\Ferreteria.Core.csproj", "{CF789B02-D680-4282-BD2B-5EAEBC8868F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.Data", "Ferreteria.Data\Ferreteria.Data.csproj", "{328367D0-A61F-4C61-B9ED-3160718BEE76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{EB513CC2-9D2B-4358-B378-914CFAD5C234}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB513CC2-9D2B-4358-B378-914CFAD5C234}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB513CC2-9D2B-4358-B378-914CFAD5C234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF789B02-D680-4282-BD2B-5EAEBC8868F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF789B02-D680-4282-BD2B-5EAEBC8868F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF789B02-D680-4282-BD2B-5EAEBC8868F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF789B02-D680-4282-BD2B-5EAEBC8868F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{328367D0-A61F-4C61-B9ED-3160718BEE76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{328367D0-A61F-4C61-B9ED-3160718BEE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{328367D0-A61F-4C61-B9ED-3160718BEE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{328367D0-A61F-4C61-B9ED-3160718BEE76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
