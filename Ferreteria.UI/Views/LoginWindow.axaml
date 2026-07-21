@@ -1,0 +1,164 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Ferreteria.UI.ViewModels"
+        x:Class="Ferreteria.UI.Views.LoginWindow"
+        x:DataType="vm:LoginViewModel"
+        Title="Acceso - Ferretería POS"
+        Width="420" Height="530"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        SystemDecorations="None"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        FontFamily="Segoe UI, Ubuntu, sans-serif">
+
+    <Design.DataContext>
+        <vm:LoginViewModel/>
+    </Design.DataContext>
+
+    <Window.Styles>
+        <!-- Estilo Botón Cerrar -->
+        <Style Selector="Button.BtnCerrar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#8C827A"/>
+        </Style>
+        <Style Selector="Button.BtnCerrar:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#F8D7DA"/>
+            <Setter Property="Foreground" Value="#D32F2F"/>
+        </Style>
+        
+        <!-- Estilo Botón Login (Se ajusta al Border Radius de 12) -->
+        <Style Selector="Button.BtnLogin">
+            <Setter Property="Background" Value="#2E7D32"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+        </Style>
+        <Style Selector="Button.BtnLogin:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1B5E20"/>
+            <Setter Property="Opacity" Value="0.9"/>
+        </Style>
+
+       
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/> 
+            <Setter Property="CaretBrush" Value="#2C2825"/>
+        </Style>
+        <!-- Quitar fondo gris cuando pasas el mouse -->
+        <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <!-- Quitar borde azul cuando haces clic (focus) -->
+        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Styles>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <!-- BoxShadow imita perfectamente el DropShadowEffect de WPF -->
+    <Border Margin="15" 
+            Background="#FBF8F2" 
+            BorderBrush="#E5DCD0" 
+            BorderThickness="1.5" 
+            CornerRadius="24"
+            BoxShadow="0 5 20 0 #20000000">
+
+        <Grid RowDefinitions="45, *">
+            
+            <!-- Barra Superior -->
+            <Grid Grid.Row="0" Background="Transparent" PointerPressed="BarraSuperior_PointerPressed">
+                <Button Classes="BtnCerrar"
+                        Width="40" Height="40" 
+                        Margin="0,5,10,0" 
+                        HorizontalAlignment="Right" 
+                        CornerRadius="20"
+                        Content="✕" 
+                        FontSize="16" 
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Click="BtnCerrar_Click"/>
+            </Grid>
+
+            <!-- Contenido del Formulario -->
+            <StackPanel Grid.Row="1" Margin="40,10,40,40">
+                
+                <!-- SOLUCIÓN AL EMOJI: Forzar fuentes que soportan emojis en Linux y Windows -->
+                <TextBlock Margin="0,0,0,5" 
+                           HorizontalAlignment="Center" 
+                           FontSize="36" 
+                           Text="🛠️" 
+                           FontFamily="Segoe UI Emoji, Noto Color Emoji, Twitter Color Emoji" />
+                           
+                <TextBlock Margin="0,5,0,4" HorizontalAlignment="Center" FontSize="24" FontWeight="Black" Foreground="#2C2825" Text="¡Bienvenido de nuevo!" />
+                <TextBlock Margin="0,0,0,30" HorizontalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="#8C827A" Text="Inicia sesión para continuar" />
+
+                <!-- USUARIO -->
+                <TextBlock Margin="4,0,0,6" FontSize="11" FontWeight="Bold" Foreground="#5C534D" Text="USUARIO" />
+                <Border Height="45" Margin="0,0,0,18" Background="White" BorderBrush="#D5D5D5" BorderThickness="1" CornerRadius="10">
+                    <TextBox x:Name="txtUsuario" Text="{Binding Usuario}" 
+                             Padding="12,0" 
+                             VerticalContentAlignment="Center" 
+                             FontSize="15" 
+                             Foreground="#2C2825"/>
+                </Border>
+
+                <!-- CONTRASEÑA -->
+                <TextBlock Margin="4,0,0,6" FontSize="11" FontWeight="Bold" Foreground="#5C534D" Text="CONTRASEÑA" />
+                <Border Height="45" Margin="0,0,0,25" Background="White" BorderBrush="#D5D5D5" BorderThickness="1" CornerRadius="10">
+                    <Grid ColumnDefinitions="*, 42">
+                        
+                        <TextBox Grid.Column="0"
+                                 x:Name="txtContrasena"
+                                 Text="{Binding Contrasena}" 
+                                 PasswordChar="*"
+                                 RevealPassword="{Binding MostrarContrasena}"
+                                 Padding="12,0" 
+                                 VerticalContentAlignment="Center" 
+                                 FontSize="15" 
+                                 Foreground="#2C2825" />
+
+                        <!-- Botón del Ojo -->
+                        <Button Grid.Column="1" 
+                                Command="{Binding AlternarVisibilidadContrasenaCommand}"
+                                Background="Transparent" 
+                                FontFamily="Segoe UI Emoji, Noto Color Emoji"
+                                Content="👁️" 
+                                Cursor="Hand" 
+                                FontSize="15">
+                             <!-- Quitamos el hover del ojo para que no se vea el cuadro gris -->
+                             <Button.Styles>
+                                 <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                     <Setter Property="Background" Value="Transparent"/>
+                                 </Style>
+                             </Button.Styles>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- BOTÓN INGRESAR -->
+                <Button Classes="BtnLogin"
+                        Command="{Binding IngresarCommand}"
+                        Height="50" 
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="INICIAR SESIÓN" 
+                        Cursor="Hand" 
+                        FontSize="16" 
+                        FontWeight="Black"/>
+
+                <!-- MENSAJE DE ERROR -->
+                <TextBlock Margin="0,15,0,0" 
+                           HorizontalAlignment="Center" 
+                           FontSize="12" 
+                           FontWeight="Bold" 
+                           Foreground="{Binding ColorMensaje}" 
+                           Text="{Binding MensajeError}" 
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

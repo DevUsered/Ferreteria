@@ -15,12 +15,11 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var usuarioService = new Ferreteria.Data.Services.UsuarioService();
+        usuarioService.InicializarBaseDatos();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel(),
-            };
+            desktop.MainWindow = new LoginWindow();
         }
 
         base.OnFrameworkInitializationCompleted();
