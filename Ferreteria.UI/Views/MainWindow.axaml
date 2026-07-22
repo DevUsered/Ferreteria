@@ -1,22 +1,160 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Ferreteria.UI.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Ferreteria.UI.Views.MainWindow"
-        x:DataType="vm:MainViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="Ferreteria.UI">
+        Title="Ferretería POS - Dashboard"
+        Width="1300" Height="750"
+        MinWidth="1000" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        WindowDecorations="None"
+        CanResize="True"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        FontFamily="Segoe UI, Ubuntu, sans-serif">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainViewModel />
-    </Design.DataContext>
+    <Window.Resources>
+        <SolidColorBrush x:Key="CremaFondo" Color="#FBF8F2" />
+        <SolidColorBrush x:Key="CremaSidebar" Color="#F2EBE0" />
+        <SolidColorBrush x:Key="TextoOscuro" Color="#2C2825" />
+        <SolidColorBrush x:Key="TextoTenue" Color="#8C827A" />
+        <SolidColorBrush x:Key="OroAcento" Color="#C59B27" />
+        <SolidColorBrush x:Key="OroFondo" Color="#F9F1DB" />
+        <SolidColorBrush x:Key="BordeArena" Color="#E5DCD0" />
+    </Window.Resources>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <Window.Styles>
+        <!-- ESTILO PARA LOS BOTONES DEL MENÚ LATERAL -->
+        <Style Selector="RadioButton.MenuBtn">
+            <Setter Property="FontFamily" Value="Segoe UI, Ubuntu" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextoOscuro}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="12,3" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <!-- Usamos Background de la plantilla para poder cambiarlo al pasar el mouse -->
+                    <Border x:Name="border" Background="{TemplateBinding Background}" Padding="15,0" CornerRadius="10" Height="46">
+                        <Grid ColumnDefinitions="32, *, 6">
+                            <!-- El Tag guarda el Emoji -->
+                            <TextBlock Grid.Column="0" Text="{TemplateBinding Tag}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" FontFamily="Segoe UI Emoji, Noto Color Emoji" />
+                            <ContentPresenter Grid.Column="1" Content="{TemplateBinding Content}" VerticalAlignment="Center" Margin="2,0,0,0" />
+                            <!-- El indicador dorado (Oculto por defecto) -->
+                            <Border x:Name="indicador" Grid.Column="2" Width="5" Height="22" HorizontalAlignment="Right" Background="{StaticResource OroAcento}" CornerRadius="3" IsVisible="False" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
 
+        <!-- EFECTO HOVER (Pasar el mouse) -->
+        <Style Selector="RadioButton.MenuBtn:pointerover /template/ Border#border">
+            <Setter Property="Background" Value="#EAE0D0" />
+        </Style>
+
+        <!-- EFECTO SELECCIONADO (Clickeado) -->
+        <Style Selector="RadioButton.MenuBtn:checked /template/ Border#border">
+            <Setter Property="Background" Value="{StaticResource OroFondo}" />
+        </Style>
+        <Style Selector="RadioButton.MenuBtn:checked">
+            <Setter Property="Foreground" Value="{StaticResource OroAcento}" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <!-- Mostrar la barrita dorada al seleccionar -->
+        <Style Selector="RadioButton.MenuBtn:checked /template/ Border#indicador">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </Window.Styles>
+
+    <!-- FONDO PRINCIPAL REDONDEADO -->
+    <Border Background="{StaticResource CremaFondo}" BorderBrush="{StaticResource BordeArena}" BorderThickness="1" CornerRadius="16" ClipToBounds="True">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition  Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- SIDEBAR LATERAL -->
+            <Border x:Name="SidebarContainer" Width="260" Grid.Column="0" Background="{StaticResource CremaSidebar}" BorderBrush="{StaticResource BordeArena}" BorderThickness="0,0,1,0">
+                <Grid RowDefinitions="90, *, 85">
+                    
+                    <!-- Logo y Título -->
+                    <StackPanel Grid.Row="0" Margin="25,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <Border Width="42" Height="42" Background="{StaticResource OroAcento}" CornerRadius="10">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="🛠️" FontFamily="Segoe UI Emoji, Noto Color Emoji" />
+                        </Border>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock FontSize="17" FontWeight="Black" Foreground="{StaticResource TextoOscuro}" Text="F E R R E T E R Í A" />
+                            <TextBlock FontSize="10" FontWeight="Bold" Foreground="{StaticResource OroAcento}" Text="POS SYSTEM v1.0" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Botones del Menú -->
+                    <ScrollViewer Grid.Row="1" Margin="0,10" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Margin="25,10,0,8" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextoTenue}" Text="PRINCIPAL" />
+                            
+                            <RadioButton x:Name="btnNavPOS" Classes="MenuBtn" GroupName="Menu" Content="Punto de Venta" Tag="🛒" IsChecked="True" IsCheckedChanged="btnNav_IsCheckedChanged" />
+                            <RadioButton x:Name="btnNavHistorial" Classes="MenuBtn" GroupName="Menu" Content="Historial Ventas" Tag="📋" IsCheckedChanged="btnNav_IsCheckedChanged" />
+
+                            <TextBlock Margin="25,20,0,8" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextoTenue}" Text="INVENTARIO" />
+                            <RadioButton x:Name="btnNavProductos" Classes="MenuBtn" GroupName="Menu" Content="Productos" Tag="📦" IsCheckedChanged="btnNav_IsCheckedChanged" />
+                            <RadioButton x:Name="btnNavCategorias" Classes="MenuBtn" GroupName="Menu" Content="Categorías" Tag="🏷️" IsCheckedChanged="btnNav_IsCheckedChanged" />
+
+                            <StackPanel x:Name="panelAdmin">
+                                <TextBlock Margin="25,20,0,8" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextoTenue}" Text="ADMINISTRACIÓN" />
+                                <RadioButton x:Name="btnNavReportes" Classes="MenuBtn" GroupName="Menu" Content="Reportes &amp; Caja" Tag="📊" IsCheckedChanged="btnNav_IsCheckedChanged" />
+                                <RadioButton x:Name="btnNavUsuarios" Classes="MenuBtn" GroupName="Menu" Content="Empleados" Tag="👥" IsCheckedChanged="btnNav_IsCheckedChanged" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- Perfil de Usuario Inferior -->
+                    <Border Grid.Row="2" Padding="15,10" Background="White" BorderBrush="{StaticResource BordeArena}" BorderThickness="0,1,0,0">
+                        <Grid ColumnDefinitions="42, *, 35">
+                            <Border Grid.Column="0" Width="40" Height="40" Background="{StaticResource OroFondo}" BorderBrush="{StaticResource OroAcento}" BorderThickness="1" CornerRadius="20">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Text="👤" FontFamily="Segoe UI Emoji, Noto Color Emoji"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="lblNombreUsuario" FontSize="14" FontWeight="Bold" Foreground="{StaticResource TextoOscuro}" Text="Cargando..." TextTrimming="CharacterEllipsis" />
+                                <Border Margin="0,3,0,0" Padding="6,2" HorizontalAlignment="Left" Background="{StaticResource OroFondo}" CornerRadius="4">
+                                    <TextBlock x:Name="lblRolUsuario" FontSize="10" FontWeight="Black" Foreground="{StaticResource OroAcento}" Text="Rol" />
+                                </Border>
+                            </StackPanel>
+                            <Button x:Name="btnCerrarSesion" Grid.Column="2" Background="Transparent" Content="🚪" Cursor="Hand" FontSize="16" FontFamily="Segoe UI Emoji, Noto Color Emoji" ToolTip.Tip="Cerrar Sesión" Click="btnCerrarSesion_Click" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- ÁREA PRINCIPAL DERECHA -->
+            <Grid Grid.Column="1" RowDefinitions="60, *">
+                <!-- Barra de Arrastre y Controles -->
+                <Grid Grid.Row="0" Background="Transparent" PointerPressed="BarraSuperior_PointerPressed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Toggle Menú y Título de Sección -->
+                    <StackPanel Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <Button x:Name="btnToggleSidebar" Width="38" Height="38" Margin="0,0,12,0" Background="Transparent" CornerRadius="8" Content="☰" Cursor="Hand" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextoOscuro}" ToolTip.Tip="Ocultar Menú" Click="btnToggleSidebar_Click" />
+                        <TextBlock x:Name="lblIconoSeccion" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="24" Text="🛒" FontFamily="Segoe UI Emoji, Noto Color Emoji" />
+                        <TextBlock x:Name="lblTituloSeccion" VerticalAlignment="Center" FontSize="20" FontWeight="Black" Foreground="{StaticResource TextoOscuro}" Text="Punto de Venta" />
+                    </StackPanel>
+
+                    <!-- Botones de Ventana (Min, Max, Cerrar) -->
+                    <StackPanel Grid.Column="1" Margin="0,10,15,0" VerticalAlignment="Top" Orientation="Horizontal">
+                        <Button Width="35" Height="30" Background="Transparent" Content="—" Cursor="Hand" FontSize="14" FontWeight="Bold" Foreground="{StaticResource TextoTenue}" Click="btnMinimizar_Click" />
+                        <Button x:Name="btnMaximizar" Width="35" Height="30" Background="Transparent" Content="□" Cursor="Hand" FontSize="14" FontWeight="Bold" Foreground="{StaticResource TextoTenue}" Click="btnMaximizar_Click" />
+                        <Button Width="35" Height="30" Background="Transparent" Content="✕" Cursor="Hand" FontSize="14" FontWeight="Bold" Foreground="#D32F2F" Click="btnCerrarApp_Click" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- CONTENEDOR DE LAS VISTAS -->
+                <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource BordeArena}" BorderThickness="1,1,0,0" CornerRadius="16,0,0,0">
+                    <ContentControl x:Name="AreaDeTrabajo" Margin="25" />
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

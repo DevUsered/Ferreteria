@@ -41,63 +41,65 @@ public partial class LoginViewModel : ObservableObject
         MostrarContrasena = !MostrarContrasena;
     }
 
-    [RelayCommand(CanExecute = nameof(PuedeIngresar))]
+   [RelayCommand(CanExecute = nameof(PuedeIngresar))]
     private async Task IngresarAsync()
     {
         MensajeError = string.Empty;
 
         if (string.IsNullOrWhiteSpace(Usuario) || string.IsNullOrWhiteSpace(Contrasena))
         {
-            ColorMensaje = "#D32F2F"; // Rojo
+            ColorMensaje = "#D32F2F"; 
             MensajeError = "⚠️ Por favor ingresa tu usuario y contraseña.";
             SolicitarFocoUsuario?.Invoke(this, EventArgs.Empty);
             return;
         }
         
         EstaCargando = true;
-        ColorMensaje = "#E6A800"; // Naranja/Amarillo
+        ColorMensaje = "#E6A800"; 
         MensajeError = "⏳ Verificando credenciales...";
 
-        bool loginExitoso = false;
         try
         {
             var usuarioEncontrado = await _usuarioService.AutenticarAsync(Usuario, Contrasena);
             
             if (usuarioEncontrado != null)
             {
-                MensajeError = "¡Éxito! Ingresando...";
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
-                    var ventanaPrincipal = new MainWindow();
-                    ventanaPrincipal.Show();
-                    desktop.MainWindow?.Close();
+                    // 1. Guardamos la referencia a la ventana actual (Login)
+                    var ventanaLogin = desktop.MainWindow;
+                    
+                    // 2. Creamos la nueva ventana
+                    var ventanaPrincipal = new MainWindow(usuarioEncontrado);
+                    
+                    // 3. ¡MUY IMPORTANTE! Le decimos a Avalonia que esta es la nueva jefa
                     desktop.MainWindow = ventanaPrincipal;
+                    
+                    // 4. Mostramos la nueva y cerramos la vieja de forma segura
+                    ventanaPrincipal.Show();
+                    ventanaLogin?.Close();
                 }
-                loginExitoso = true;
+                
+                // 5. Salimos del método inmediatamente. El login ya murió.
+                return; 
+            }
+            else
+            {
+                // Si falla, mostramos error y regresamos el foco
+                ColorMensaje = "#D32F2F"; 
+                MensajeError = "❌ Usuario o contraseña incorrectos.";
+                Usuario = string.Empty;
+                Contrasena = string.Empty;
+                SolicitarFocoUsuario?.Invoke(this, EventArgs.Empty);
             }
         }
         catch (Exception ex)
         {
             MensajeError = $"Error de conexión: {ex.Message}";
             ColorMensaje = "#D32F2F";
-            EstaCargando = false;
-            return;
         }
 
-        if (loginExitoso)
-        {
-            MensajeError = "¡Éxito!";
-            ColorMensaje = "#2E7D32"; 
-        }
-        else
-        {
-            ColorMensaje = "#D32F2F"; // Rojo
-            MensajeError = "❌ Usuario o contraseña incorrectos.";
-            Usuario = string.Empty;
-            Contrasena = string.Empty;
-            SolicitarFocoUsuario?.Invoke(this, EventArgs.Empty);
-        }
-
+        // Si llegamos aquí, es porque falló el login o hubo un error de conexión
         EstaCargando = false;
     }
 }
